@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server'
+import { verifySessionToken, COOKIE_NAME } from '@/lib/auth'
 
-export function proxy(request) {
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginPage = request.nextUrl.pathname === '/admin/login'
-  const session = request.cookies.get('admin_session')
+export async function proxy(request) {
+  const { pathname } = request.nextUrl
+  const isLoginPage = pathname === '/admin/login'
 
-  if (isAdminRoute && !isLoginPage && !session) {
-    return NextResponse.redirect(new URL('/admin/login', request.url))
+  // On laisse passer la page de login
+  if (isLoginPage) return NextResponse.next()
+
+  // Pour toute autre route admin, vérifier la signature du JWT
+  const token = request.cookies.get(COOKIE_NAME)?.value
+  const payload = await verifySessionToken(token)
+
+  if (!payload || payload.role !== 'admin') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/login'
+    if (pathname !== '/admin') url.searchParams.set('next', pathname)
+    return NextResponse.redirect(url)
   }
 
   return NextResponse.next()

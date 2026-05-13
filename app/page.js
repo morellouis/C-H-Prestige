@@ -14,10 +14,11 @@ export default async function Home() {
   let produitsVedette = []
   try {
     const tous = await getProduits()
-    produitsVedette = tous.filter(p => p.en_vedette).slice(0, 4)
-    if (produitsVedette.length < 4) {
-      const restants = tous.filter(p => !p.en_vedette).slice(0, 4 - produitsVedette.length)
-      produitsVedette = [...produitsVedette, ...restants]
+    // On affiche TOUS les produits marqués "en vedette" (autant de lignes qu'il en faut)
+    produitsVedette = tous.filter(p => p.en_vedette)
+    // S'il n'y en a aucun, on affiche les 4 plus récents pour ne pas avoir une section vide
+    if (produitsVedette.length === 0) {
+      produitsVedette = tous.slice(0, 4)
     }
   } catch {
     // Supabase pas encore configuré

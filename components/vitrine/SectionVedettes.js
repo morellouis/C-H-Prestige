@@ -31,9 +31,18 @@ export default function SectionVedettes({ produits }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {produits.map((p, i) => (
-            <CarteProduct key={p.id} produit={p} priority={i < 4} index={i} />
+            <CarteProduct
+              key={p.id}
+              produit={p}
+              priority={i < 4}
+              index={i % 4}
+            />
           ))}
         </div>
+
+        <p className="mt-12 text-center text-sm text-[var(--gris-moyen)]">
+          {produits.length} pièce{produits.length > 1 ? 's' : ''} en coup de cœur — sélection actualisée régulièrement
+        </p>
       </div>
     </section>
   )

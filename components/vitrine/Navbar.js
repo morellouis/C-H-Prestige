@@ -14,7 +14,8 @@ export default function Navbar({ transparent = false }) {
     setScrolled(y > 40)
   })
 
-  const isDark = transparent && !scrolled
+  // Le shader est désormais clair, donc on garde le texte noir partout
+  const isDark = false
 
   return (
     <>
