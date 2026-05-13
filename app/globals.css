@@ -1,26 +1,160 @@
 @import "tailwindcss";
 
+/*
+  Palette modernisée : monochrome + violet électrique
+  Les anciens noms (--gold) sont mappés sur le nouvel accent pour ne pas casser le code existant.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf9f6;          /* off-white chaud */
+  --foreground: #0a0a0a;          /* jet black */
+
+  /* Nouvel accent : violet électrique premium */
+  --accent: #5b21b6;
+  --accent-light: #a78bfa;
+  --accent-dark: #3b0764;
+  --accent-vivid: #7c3aed;
+
+  /* Alias pour compatibilité (gardent leur nom mais nouvelle valeur) */
+  --gold: var(--accent);
+  --gold-light: var(--accent-light);
+  --gold-dark: var(--accent-dark);
+
+  --noir: #0a0a0a;
+  --noir-soft: #161616;
+  --gris-clair: #f3f1ec;          /* cream un peu plus chaud */
+  --gris-moyen: #6b6b70;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'ss01' 1;
+  letter-spacing: -0.011em;
+}
+
+/* Typo display : très grande, négative letter-spacing, presque italique */
+.font-display {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Scrollbar discrète */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+
+/* Gradient de texte violet électrique (anciennement "gold-gradient") */
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.text-gold-gradient {
+  background: linear-gradient(120deg, var(--accent-dark), var(--accent-vivid), var(--accent-light), var(--accent-vivid), var(--accent-dark));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Apparence du bouton signature */
+.btn-prestige {
+  position: relative;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.btn-prestige-light {
+  background: white;
+  color: black;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.btn-prestige-light:hover {
+  background: black;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* Bouton "gold" devient violet électrique */
+.btn-prestige-gold {
+  background: linear-gradient(135deg, var(--accent-vivid), var(--accent-dark));
+  color: white;
+}
+.btn-prestige-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(91, 33, 182, 0.45);
+}
+
+/* Bouton noir contemporain */
+.btn-prestige-dark {
+  background: var(--noir);
+  color: white;
+}
+.btn-prestige-dark:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(91, 33, 182, 0.35);
+}
+
+/* Underline animé pour les liens */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Pour les "tags" de catégorie modernes */
+.tag-modern {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(91, 33, 182, 0.08);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
