@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 
 export default function Footer() {
@@ -26,9 +27,15 @@ export default function Footer() {
         {/* Grille infos */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           <div>
-            <h3 className="font-display text-xl mb-4">
-              C&H <span className="text-gold-gradient">PRESTIGE</span>
-            </h3>
+            <Link href="/" aria-label="C&H Prestige — Accueil" className="inline-block mb-4 transition-opacity hover:opacity-80">
+              <Image
+                src="/logo-blanc-transparent.png"
+                alt="C&H Prestige"
+                width={80}
+                height={80}
+                className="h-16 w-auto"
+              />
+            </Link>
             <p className="text-white/50 text-sm leading-relaxed">
               Pièces rares et authentifiées. Sourcing international.
             </p>

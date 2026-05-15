@@ -29,14 +29,19 @@ export default function SectionVedettes({ produits }) {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        {/* Flex wrap + justify-center : les cartes se centrent quand il y en a moins que la ligne ne peut en contenir */}
+        <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
           {produits.map((p, i) => (
-            <CarteProduct
+            <div
               key={p.id}
-              produit={p}
-              priority={i < 4}
-              index={i % 4}
-            />
+              className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-24px)]"
+            >
+              <CarteProduct
+                produit={p}
+                priority={i < 4}
+                index={i % 4}
+              />
+            </div>
           ))}
         </div>
 

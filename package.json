@@ -10,7 +10,8 @@
     "upload:downloads": "node scripts/upload-downloads.mjs",
     "seed:premium": "node scripts/seed-premium.mjs",
     "refresh:images": "node scripts/refresh-images.mjs",
-    "cleanup:images": "node scripts/cleanup-old-images.mjs"
+    "cleanup:images": "node scripts/cleanup-old-images.mjs",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -29,6 +30,7 @@
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "png-to-ico": "^3.0.1",
     "tailwindcss": "^4"
   }
 }

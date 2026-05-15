@@ -35,7 +35,12 @@ export default function SectionSavoirFaire() {
         style={{ y }}
         className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] select-none"
       >
-        <span className="font-display text-[20rem] whitespace-nowrap">PRESTIGE</span>
+        <span
+          className="font-display whitespace-nowrap leading-none"
+          style={{ fontSize: 'clamp(5rem, 28vw, 20rem)' }}
+        >
+          PRESTIGE
+        </span>
       </motion.div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">

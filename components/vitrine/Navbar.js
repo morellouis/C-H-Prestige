@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
@@ -29,14 +30,16 @@ export default function Navbar({ transparent = false }) {
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className={`text-base font-semibold tracking-[0.2em] transition-colors ${
-              isDark ? 'text-white' : 'text-black'
-            }`}
-          >
-            C&H <span className="text-gold-gradient">PRESTIGE</span>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 h-24 flex items-center justify-between">
+          <Link href="/" aria-label="C&H Prestige — Accueil" className="block transition-opacity hover:opacity-70">
+            <Image
+              src="/logo-noir-transparent.png"
+              alt="C&H Prestige"
+              width={160}
+              height={160}
+              priority
+              className="h-20 w-auto"
+            />
           </Link>
 
           <div className="hidden md:flex items-center gap-10">
@@ -95,7 +98,26 @@ export default function Navbar({ transparent = false }) {
         }}
         className="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl md:hidden"
       >
-        <div className="flex flex-col items-center justify-center h-full gap-8">
+        <div className="flex flex-col items-center justify-center h-full gap-10">
+          {/* Logo en haut du menu mobile */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{
+              opacity: open ? 1 : 0,
+              scale: open ? 1 : 0.9,
+            }}
+            transition={{ duration: 0.4 }}
+            className="mb-8"
+          >
+            <Image
+              src="/icon.png"
+              alt="C&H Prestige"
+              width={120}
+              height={120}
+              className="h-24 w-auto"
+            />
+          </motion.div>
+
           {[
             { href: '/', label: 'Accueil' },
             { href: '/produits', label: 'Collection' },
@@ -105,7 +127,7 @@ export default function Navbar({ transparent = false }) {
               key={link.href}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: open ? 1 : 0, y: open ? 0 : 20 }}
-              transition={{ delay: open ? i * 0.1 : 0 }}
+              transition={{ delay: open ? 0.2 + i * 0.1 : 0 }}
             >
               <Link
                 href={link.href}

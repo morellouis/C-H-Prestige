@@ -50,6 +50,13 @@ body {
   line-height: 0.92;
 }
 
+/* Logo : Playfair Display, sérif premium */
+.font-logo {
+  font-family: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .text-balance {
   text-wrap: balance;
 }

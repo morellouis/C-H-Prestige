@@ -3,10 +3,6 @@ import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
-/**
- * Shader hero "Aurora" : champ de couleurs fluide cream/violet
- * qui suit le pointeur. Pas de noir dominant — un fond clair et vibrant.
- */
 const vertexShader = /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -23,7 +19,7 @@ const fragmentShader = /* glsl */ `
   uniform vec2 uMouse;
   uniform vec2 uResolution;
 
-  // Hash & noise classiques d'Inigo Quilez
+  // Hash & noise (Inigo Quilez)
   vec3 hash3(vec2 p) {
     vec3 q = vec3(dot(p, vec2(127.1, 311.7)),
                   dot(p, vec2(269.5, 183.3)),
@@ -35,16 +31,16 @@ const fragmentShader = /* glsl */ `
     vec2 i = floor(p);
     vec2 f = fract(p);
     vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(mix(dot(hash3(i + vec2(0.0, 0.0)).xy - 0.5, f - vec2(0.0, 0.0)),
-                   dot(hash3(i + vec2(1.0, 0.0)).xy - 0.5, f - vec2(1.0, 0.0)), u.x),
-               mix(dot(hash3(i + vec2(0.0, 1.0)).xy - 0.5, f - vec2(0.0, 1.0)),
-                   dot(hash3(i + vec2(1.0, 1.0)).xy - 0.5, f - vec2(1.0, 1.0)), u.x), u.y);
+    return mix(mix(dot(hash3(i + vec2(0.0, 0.0)).xy * 2.0 - 1.0, f - vec2(0.0, 0.0)),
+                   dot(hash3(i + vec2(1.0, 0.0)).xy * 2.0 - 1.0, f - vec2(1.0, 0.0)), u.x),
+               mix(dot(hash3(i + vec2(0.0, 1.0)).xy * 2.0 - 1.0, f - vec2(0.0, 1.0)),
+                   dot(hash3(i + vec2(1.0, 1.0)).xy * 2.0 - 1.0, f - vec2(1.0, 1.0)), u.x), u.y);
   }
 
   float fbm(vec2 p) {
     float v = 0.0;
     float a = 0.5;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       v += a * noise(p);
       p *= 2.0;
       a *= 0.5;
@@ -52,59 +48,61 @@ const fragmentShader = /* glsl */ `
     return v;
   }
 
-  // Mélange linéaire respectant la perception de luminosité
-  vec3 mixSrgb(vec3 a, vec3 b, float t) {
-    return pow(mix(pow(a, vec3(2.2)), pow(b, vec3(2.2)), t), vec3(1.0/2.2));
-  }
-
   void main() {
     vec2 uv = vUv;
-    vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
-    vec2 centered = (uv - 0.5) * aspect;
-    vec2 mouseCentered = (uMouse - 0.5) * aspect;
+    float aspect = uResolution.x / uResolution.y;
+    vec2 centered = (uv - 0.5) * vec2(aspect, 1.0);
+    vec2 mouseCentered = (uMouse - 0.5) * vec2(aspect, 1.0);
 
-    // Distance à la souris (zone de chaleur)
+    // Halo souris : zone d'attraction lumineuse
     float distMouse = length(centered - mouseCentered);
-    float halo = smoothstep(0.8, 0.0, distMouse);
+    float halo = smoothstep(0.9, 0.0, distMouse);
+    float haloSerre = smoothstep(0.3, 0.0, distMouse);
 
-    // Noise multi-couches qui flotte
-    float t = uTime * 0.08;
-    vec2 p = uv * 2.5 + mouseCentered * 0.4;
+    // Coordonnées du bruit influencées par la souris
+    float t = uTime * 0.1;
+    vec2 p = uv * 3.0 + mouseCentered * 0.8;
     vec2 q = vec2(fbm(p + t), fbm(p - t + vec2(5.2, 1.3)));
     vec2 r = vec2(
-      fbm(p + q + vec2(1.7, 9.2) + t * 0.7),
-      fbm(p + q + vec2(8.3, 2.8) - t * 0.7)
+      fbm(p + 2.0 * q + vec2(1.7, 9.2) + t * 0.7),
+      fbm(p + 2.0 * q + vec2(8.3, 2.8) - t * 0.7)
     );
-    float f = fbm(p + 2.5 * r);
+    float f = fbm(p + 3.0 * r);
 
-    // Palette claire et premium
-    vec3 cream     = vec3(0.980, 0.974, 0.961);  // #faf9f6
-    vec3 lavandeP  = vec3(0.929, 0.910, 0.988);  // #ede8fc
+    // REMAP du bruit de [-1, 1] vers [0, 1] (corrige le problème de fond blanc)
+    f = clamp(f * 0.5 + 0.5, 0.0, 1.0);
+
+    // Palette premium violet/magenta/cream avec ÉCART de luminosité visible
+    vec3 lavandeP  = vec3(0.918, 0.890, 0.992);  // #eae3fd - tres clair
     vec3 lavande   = vec3(0.776, 0.706, 0.984);  // #c6b4fb
-    vec3 violet    = vec3(0.486, 0.227, 0.929);  // #7c3aed
-    vec3 magenta   = vec3(0.925, 0.282, 0.600);  // #ec4899
+    vec3 violet    = vec3(0.486, 0.227, 0.929);  // #7c3aed - violet electrique
+    vec3 magenta   = vec3(0.925, 0.282, 0.600);  // #ec4899 - magenta vif
+    vec3 indigo    = vec3(0.310, 0.157, 0.768);  // #4f28c4
 
-    // Composition : base cream → lavande → violet vibrant selon le noise
-    vec3 col = cream;
-    col = mixSrgb(col, lavandeP, smoothstep(0.0, 0.35, f));
-    col = mixSrgb(col, lavande, smoothstep(0.25, 0.55, f));
-    col = mixSrgb(col, violet, smoothstep(0.5, 0.85, f) * 0.85);
+    // Bandes de couleurs basées sur f, qui couvrent toute la valeur [0,1]
+    vec3 col = lavandeP;
+    col = mix(col, lavande, smoothstep(0.30, 0.55, f));
+    col = mix(col, violet, smoothstep(0.50, 0.75, f));
+    col = mix(col, indigo, smoothstep(0.75, 0.95, f) * 0.85);
 
-    // Le halo de la souris ajoute du magenta et de la luminosité
-    col = mixSrgb(col, magenta, halo * 0.35 * smoothstep(0.4, 0.9, f));
-    col += halo * 0.06; // léger éclat global
+    // Léger ajout de magenta pour la chaleur
+    col = mix(col, magenta, smoothstep(0.55, 0.70, f) * length(q) * 0.4);
 
-    // Lignes lumineuses subtiles (effet aurore)
-    float aurora = abs(sin(f * 8.0 + uTime * 0.3 + length(q) * 2.0));
-    aurora = smoothstep(0.85, 1.0, aurora);
-    col += aurora * 0.15 * lavande;
+    // Halo souris : tâche lumineuse qui suit le pointeur
+    col = mix(col, magenta, halo * 0.4 * smoothstep(0.3, 0.8, f));
+    col = mix(col, vec3(1.0, 0.95, 1.0), haloSerre * 0.3);
 
-    // Vignette TRÈS douce, vers du violet pas du noir
-    float vig = 1.0 - smoothstep(0.5, 1.2, length((uv - 0.5) * aspect));
-    col = mixSrgb(col, col * 0.92 + violet * 0.04, 1.0 - vig);
+    // Lignes aurores
+    float aurora = abs(sin(f * 10.0 + uTime * 0.4 + length(r) * 3.0));
+    aurora = smoothstep(0.88, 1.0, aurora);
+    col += aurora * 0.2 * vec3(0.9, 0.7, 1.0);
 
-    // Grain fin
-    float grain = (hash3(uv * uResolution + uTime).x - 0.5) * 0.025;
+    // Vignette TRÈS douce — vers violet pas vers noir
+    float vig = 1.0 - smoothstep(0.4, 1.3, length(centered));
+    col = mix(col * 0.85 + indigo * 0.05, col, vig);
+
+    // Grain
+    float grain = (hash3(uv * uResolution + uTime).x - 0.5) * 0.02;
     col += grain;
 
     gl_FragColor = vec4(col, 1.0);
@@ -125,26 +123,28 @@ function ShaderPlane() {
 
   useFrame((state, delta) => {
     if (!meshRef.current) return
-    // Lissage souris (lerp)
-    mouse.current.x += (targetMouse.current.x - mouse.current.x) * 0.06
-    mouse.current.y += (targetMouse.current.y - mouse.current.y) * 0.06
+    mouse.current.x += (targetMouse.current.x - mouse.current.x) * 0.07
+    mouse.current.y += (targetMouse.current.y - mouse.current.y) * 0.07
     uniforms.uTime.value += delta
     uniforms.uMouse.value.set(mouse.current.x, mouse.current.y)
     uniforms.uResolution.value.set(size.width, size.height)
   })
 
   useEffect(() => {
-    function onPointer(e) {
-      const x = (e.clientX ?? e.touches?.[0]?.clientX) / window.innerWidth
-      const y = 1 - (e.clientY ?? e.touches?.[0]?.clientY) / window.innerHeight
-      targetMouse.current.x = x
-      targetMouse.current.y = y
+    function onMouse(e) {
+      targetMouse.current.x = e.clientX / window.innerWidth
+      targetMouse.current.y = 1 - e.clientY / window.innerHeight
     }
-    window.addEventListener('mousemove', onPointer)
-    window.addEventListener('touchmove', onPointer)
+    function onTouch(e) {
+      if (!e.touches[0]) return
+      targetMouse.current.x = e.touches[0].clientX / window.innerWidth
+      targetMouse.current.y = 1 - e.touches[0].clientY / window.innerHeight
+    }
+    window.addEventListener('mousemove', onMouse)
+    window.addEventListener('touchmove', onTouch, { passive: true })
     return () => {
-      window.removeEventListener('mousemove', onPointer)
-      window.removeEventListener('touchmove', onPointer)
+      window.removeEventListener('mousemove', onMouse)
+      window.removeEventListener('touchmove', onTouch)
     }
   }, [])
 

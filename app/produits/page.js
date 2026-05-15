@@ -1,5 +1,5 @@
 import Navbar from '@/components/vitrine/Navbar'
-import CarteProduct from '@/components/vitrine/CarteProduct'
+import CollectionFiltree from '@/components/vitrine/CollectionFiltree'
 import Footer from '@/components/vitrine/Footer'
 import { getProduits } from '@/lib/produits'
 
@@ -11,15 +11,12 @@ export default async function ProduitsPage() {
     // Supabase pas encore configuré
   }
 
-  // Grouper par catégorie pour un affichage plus rythmé
-  const categories = [...new Set(produits.map(p => p.categorie).filter(Boolean))]
-
   return (
     <main className="bg-[var(--background)] min-h-screen">
       <Navbar />
 
       {/* En-tête */}
-      <section className="pt-32 pb-16 px-6 lg:px-12">
+      <section className="pt-32 pb-12 px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
           <p className="text-gold-gradient text-sm uppercase tracking-[0.4em] mb-6">
             En stock
@@ -28,12 +25,12 @@ export default async function ProduitsPage() {
             Pièces <em className="text-gold-gradient not-italic font-light">disponibles.</em>
           </h1>
           <p className="mt-8 text-lg text-[var(--gris-moyen)] max-w-2xl">
-            {produits.length} pièce{produits.length > 1 ? 's' : ''} en stock, chacune authentifiée et prête à être livrée. Vous ne trouvez pas ce que vous cherchez ? Faites-nous une demande personnalisée.
+            {produits.length} pièce{produits.length > 1 ? 's' : ''} en stock, chacune authentifiée et prête à être livrée. Filtrez par catégorie ou triez par prix pour trouver la vôtre.
           </p>
         </div>
       </section>
 
-      {/* Grille */}
+      {/* Grille avec filtres */}
       <section className="px-6 lg:px-12 pb-32">
         <div className="max-w-7xl mx-auto">
           {produits.length === 0 ? (
@@ -41,11 +38,7 @@ export default async function ProduitsPage() {
               <p className="text-lg">Aucune pièce dans la collection pour le moment.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
-              {produits.map((p, i) => (
-                <CarteProduct key={p.id} produit={p} priority={i < 3} index={i} />
-              ))}
-            </div>
+            <CollectionFiltree produits={produits} />
           )}
         </div>
       </section>
