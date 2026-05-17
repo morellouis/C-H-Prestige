@@ -24,7 +24,7 @@ export default function SectionAvisClient({ avis, total }) {
             Ils nous ont fait confiance
           </p>
           <h2 className="font-display text-5xl md:text-7xl text-balance leading-tight">
-            Plus de 500 clients <em className="text-gold-gradient not-italic font-light">satisfaits.</em>
+            Ce que disent <em className="text-gold-gradient not-italic font-light">nos clients.</em>
           </h2>
         </motion.div>
 
@@ -50,7 +50,10 @@ export default function SectionAvisClient({ avis, total }) {
 
         <div className="mt-12 flex items-center justify-center gap-4 text-sm text-[var(--gris-moyen)]">
           <Etoiles note={Math.round(moyenne * 2) / 2} />
-          <span>{moyenneArrondie} / 5 sur la base de {totalAffiche}+ avis vérifiés</span>
+          <span>
+            Note moyenne {moyenneArrondie} / 5
+            {' '}— {totalAffiche} avis client{totalAffiche > 1 ? 's' : ''}
+          </span>
         </div>
       </div>
     </section>

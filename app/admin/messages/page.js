@@ -1,6 +1,6 @@
 import AdminNavbar from '@/components/admin/AdminNavbar'
 import ListeMessages from '@/components/admin/ListeMessages'
-import { getMessages } from '@/lib/messages'
+import { getMessages } from '@/lib/messages-admin'
 
 export const dynamic = 'force-dynamic'
 

@@ -71,7 +71,14 @@ export default function Footer() {
 
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
           <p>© {new Date().getFullYear()} C&H Prestige — Tous droits réservés</p>
-          <p>Site conçu avec soin.</p>
+          <div className="flex gap-6">
+            <Link href="/mentions-legales" className="hover:text-white transition-colors">
+              Mentions légales
+            </Link>
+            <Link href="/confidentialite" className="hover:text-white transition-colors">
+              Confidentialité
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

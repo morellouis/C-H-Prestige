@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import AdminNavbar from '@/components/admin/AdminNavbar'
 import FormulaireAvis from '@/components/admin/FormulaireAvis'
-import { getAvis } from '@/lib/avis'
+import { getAvis } from '@/lib/avis-admin'
 
 export default async function ModifierAvisPage({ params }) {
   const { id } = await params

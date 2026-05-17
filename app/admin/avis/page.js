@@ -2,7 +2,7 @@ import Link from 'next/link'
 import AdminNavbar from '@/components/admin/AdminNavbar'
 import BoutonSupprimerAvis from '@/components/admin/BoutonSupprimerAvis'
 import Etoiles from '@/components/vitrine/Etoiles'
-import { getAllAvis } from '@/lib/avis'
+import { getAllAvis } from '@/lib/avis-admin'
 
 export const dynamic = 'force-dynamic'
 

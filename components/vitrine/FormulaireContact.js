@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { envoyerMessage } from '@/lib/messages'
 
 export default function FormulaireContact() {
-  const [form, setForm] = useState({ nom: '', email: '', sujet: '', message: '' })
+  const [form, setForm] = useState({ nom: '', email: '', sujet: '', message: '', website: '' })
   const [statut, setStatut] = useState('idle') // idle | sending | success | error
   const [erreur, setErreur] = useState('')
 
@@ -18,7 +18,7 @@ export default function FormulaireContact() {
     try {
       await envoyerMessage(form)
       setStatut('success')
-      setForm({ nom: '', email: '', sujet: '', message: '' })
+      setForm({ nom: '', email: '', sujet: '', message: '', website: '' })
     } catch (err) {
       setStatut('error')
       setErreur(err.message || "Une erreur est survenue.")
@@ -43,6 +43,20 @@ export default function FormulaireContact() {
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-black/5 rounded-3xl p-8 lg:p-10 flex flex-col gap-5 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
       <h2 className="font-display text-2xl mb-2">Envoyez-nous un message</h2>
+
+      {/* Honeypot anti-bot : invisible pour les humains, rempli par les bots */}
+      <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden" tabIndex={-1}>
+        <label>Ne pas remplir ce champ
+          <input
+            type="text"
+            name="website"
+            value={form.website}
+            onChange={handleChange}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </label>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
